@@ -1,37 +1,38 @@
-
-function Footer(){
-    return(
-        <footer className="p-3 bg-stone-100">
-            <div className=" sm:flex text-left sm:text-justify sm:justify-around text-base my-3">
-                <div className="hidden sm:block">
-                    <h2 className="text-primary">About PayVia</h2>
-                    Lorem, ipsum dolor sit amet <br/>consectetur adipisicing elit. Vero<br/> ipsam,</div>
-                <div className=" pb-3 sm:pb-0">
-                    <h2 className="text-primary">Quick Links</h2>
-                    <a className="block" href="">About Us</a>
-                    <a className="block" href="">privacy policy</a>
-                    <a className="block" href="">Terms of Service</a>
-                </div>
-                <div className="hidden sm:block">
-                    <h2 className="text-primary">Contact Us</h2>
-                    <p>
-                        Lorem ipsum dolor sit amet <br/>consectetur adipisicing elit.<br/> Neque obcaecati ullam ea atque 
+function Footer() {
+    return (
+        <footer className="p-6 bg-gray-800 text-secondary">
+            <div className="sm:flex sm:justify-around text-base text-center sm:text-left my-6">
+                <div className="mb-6 sm:mb-0">
+                    <h2 className="text-primary font-semibold mb-2">About PayVia</h2>
+                    <p className="text-gray-400">
+                        Payvia is committed to providing seamless <br />transactions for businesses globally.
                     </p>
                 </div>
-                <div className="">
-                    <h2 className="text-primary">Follow Us</h2>
-                    <p>Facebook</p>
-                    <p>Twitter</p>
-                    <p>Instagram</p>
-                    </div>
-            </div> 
-            <hr/>
-            <div className="text-center text-text text-sm pt-3 pb-1">
-                &copy; 2024 Payvia, All right Reserved
+                <div className="mb-6 sm:mb-0">
+                    <h2 className="text-primary font-semibold mb-2">Quick Links</h2>
+                    <a className="block text-gray-400 hover:text-primary transition duration-300" href="#">About Us</a>
+                    <a className="block text-gray-400 hover:text-primary transition duration-300" href="#">Privacy Policy</a>
+                    <a className="block text-gray-400 hover:text-primary transition duration-300" href="#">Terms of Service</a>
+                </div>
+                <div className="mb-6 sm:mb-0">
+                    <h2 className="text-primary font-semibold mb-2">Contact Us</h2>
+                    <p className="text-gray-400">
+                        Reach out to us for support or questions. <br />We are here to help your business thrive.
+                    </p>
+                </div>
+                <div>
+                    <h2 className="text-primary font-semibold mb-2">Follow Us</h2>
+                    <p className="text-gray-400 hover:text-primary cursor-pointer">Facebook</p>
+                    <p className="text-gray-400 hover:text-primary cursor-pointer">Twitter</p>
+                    <p className="text-gray-400 hover:text-primary cursor-pointer">Instagram</p>
+                </div>
+            </div>
+            <hr className="border-gray-700"/>
+            <div className="text-center pt-3 text-gray-400">
+                &copy; 2024 Payvia, All rights reserved.
             </div>
         </footer>
-    )
-        
-        
+    );
 }
+
 export default Footer;

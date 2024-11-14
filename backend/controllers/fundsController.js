@@ -12,12 +12,10 @@ const sendFunds=asyncHandler(async (req,res) => {
     res.status(200).json('Sent successfully')
 })
 const walletBalance=asyncHandler(async (req,res) => {
-    //const {currency, value} = req.body
     const userId = req.user.id;
     let userFunds = await fundsModel.findOne({userId});
     if (!userFunds) {
-        userFunds = await fundsModel.create({userId: req.user._id})
-        // res.status(404).json({ message: 'User not Found' })
+        userFunds = await fundsModel.create({userId})
     }
     res.status(200).json({
         currency: userFunds.balance.currency, value: userFunds.balance.value

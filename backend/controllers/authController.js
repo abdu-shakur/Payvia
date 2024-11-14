@@ -35,7 +35,7 @@ const login = asyncHandler(async(req, res) => {
     const passwordConfirm = await bcrypt.compare(password,user.password)
     if (user && passwordConfirm){
         console.log('Login successful')
-        res.status(200).json({_id: user.id, name: user.name, email: user.email, token: generateJWTtoken(user._id)})
+        res.status(200).json({_id: user.id, name: user.name, email: user.email, token: generateJWTtoken(user._id, user.name)})
     }else{
         res.status(400)
         throw new Error("Invalid data");
@@ -49,5 +49,5 @@ const getUser = asyncHandler(async(req, res) => {
         res.status(200).json({ id: _id, name, email })
 })
 
-const generateJWTtoken = id => jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: '1d'})
+const generateJWTtoken = (id,name) => jwt.sign({id,name}, process.env.JWT_SECRET, {expiresIn: '1d'})
 module.exports = { register, login, getUser }

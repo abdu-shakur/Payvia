@@ -37,7 +37,7 @@ function Login(){
                     </div>
                     {/* Social Login: Google, Facebook etc */}
                     <button type="submit" className="submit-button">Login</button>
-                    <h3 className="text-primary cursor-pointer text-center py-2 hover:text-Accent">Forget Password?</h3>
+                    <h3 className="text-primary cursor-pointer text-center py-2 hover:text-Accent"><a href="/forgot-password">Forget Password?</a></h3>
                     <h3 className="text-center text-opacity-75">Don't have an account? <span className="text-primary cursor-pointer"><a href="/signup">Sign Up</a></span></h3>
             </form>
         </div>
