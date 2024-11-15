@@ -9,17 +9,20 @@ const transactionSchema = mongoose.Schema(
         },
         recipientId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
-            required: true
+            ref: 'User'
         },
         referenceCode: {
             type: String,
-            unique: true,
             required: true
         },
         amount: {
             currency: { type: String, default: 'Naira', required: true },
             value: { type: Number, default: 0, required: true }
+        },
+        transactionDirection: {
+            type: String,
+            enum: ['debit', 'credit'],
+            required: true
         },
         fees: {
             currency: { type: String, default: 'Naira' },
@@ -50,5 +53,6 @@ const transactionSchema = mongoose.Schema(
     },
     { timestamps: true }
 );
+
 
 module.exports = mongoose.model('Transaction', transactionSchema);

@@ -2,13 +2,12 @@ import axios from "axios";
 import React, {useState} from "react";
 
 function Signup(){
-    const API_URL = "http://localhost:8000/api/auth/"
     const [user, setUser]=useState({name:'',email:'',username:'',phoneNumber:'', password:'',})
     const {name, username, email, password, phoneNumber} = user
     const onSubmit = async(e)=>{
         e.preventDefault()
         try {
-            const response = await axios.post(API_URL, user);
+            const response = await axios.post(`${apiUrl}/api/auth/`, user);
             console.log(response)
             window.location.href=('/login');
         } catch (error) {

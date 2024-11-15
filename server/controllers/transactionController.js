@@ -20,7 +20,9 @@ const InitiatePaystackTransaction = asyncHandler(async (req, res) => {
     email: user.email,
     amount: req.body.amount * 100, // Convert to kobo for Paystack
   };
-
+  if (params.amount < 0){
+    return res.status(400).json({message: "Enter amount greater than 1"})
+  }
   try {
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
@@ -46,74 +48,84 @@ const InitiatePaystackTransaction = asyncHandler(async (req, res) => {
 
 // Initiates a local transaction (transfer between users)
 const initiateLocalTransaction = asyncHandler(async (req, res) => {
-  
   const userId = req.user.id;
+  const { username, amount } = req.body; 
+  const transactionAmount = Number(amount);
+  
+  // Find the sender and recipient
+  const user = await User.findById(userId);
+  const recipient = await User.findOne({ username });
 
-  //Local Transfer reference keygen
-  const generateReferenceCode = (userId) => {
+  if (!user || !recipient) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+ 
+const generateReferenceCode = (userId) => {
     const uniquePart = crypto.randomBytes(3).toString('hex'); // Random hex code
     const timestampPart = Date.now().toString(36); // Encoded timestamp
     return `${userId}-${uniquePart}-${timestampPart}`;
 };
-  
-  const { username, amount } = req.body; 
-  const transactionAmount = Number(amount);
-  // Find the sender
-  const user = await User.findById(userId);
-  if (!user) {
-    return res.status(404).json({ message: 'Sender user not found' });
-  }
 
-  // Ensure user is not transferring funds to themselves
-  if (user.username === username) {
-    return res.status(400).json({ message: 'Cannot transfer to your own account' });
-  }
 
-  // Find the recipient
-  const recipient = await User.findOne({ username });
-  if (!recipient) {
-    return res.status(404).json({ message: 'Recipient user not found' });
-  }
-
-  // Find sender and recipient wallets
+  // Ensure recipient and sender have wallets
   const senderWallet = await Wallet.findOne({ userId });
   const recipientWallet = await Wallet.findOne({ userId: recipient._id });
-
   if (!senderWallet || !recipientWallet) {
-    return res.status(404).json({ message: 'Wallet not found for one of the users' });
+    return res.status(404).json({ message: 'Wallet not found' });
   }
 
-  // Check if the sender has sufficient balance
+  if (user.username === username){
+    return res.status(400).json({ message: 'Cant transfer to self' });
+  }
+  console.log("recipient wallet ID:", user.username)
+  console.log("sender wallet ID:", username)
+ 
+
+  // Check balance and perform transfer
   if (senderWallet.balance.value < transactionAmount) {
-    return res.status(400).json({ message: 'Insufficient funds in your wallet' });
+    return res.status(400).json({ message: 'Insufficient funds' });
+  }
+  if (transactionAmount < 0) {
+    return res.status(400).json({ message: 'Cannot Transfer Negative value' });
   }
 
-  // Perform the transfer (subtract from sender, add to recipient)
-  const transactionStatus = 'success';
+  
+
+  // Debit sender and credit recipient
   senderWallet.balance.value -= transactionAmount;
   recipientWallet.balance.value += transactionAmount;
 
-
-
-  // Save the updated balances
   await senderWallet.save();
   await recipientWallet.save();
 
-  const referenceCode = generateReferenceCode(userId)
 
-  const transaction = new Transaction({
+  const referenceCode = generateReferenceCode(userId);
+  console.log('transaction ID is: ', referenceCode)
+
+
+  // Record transactions for both users
+  const senderTransaction = new Transaction({
     userId,
     recipientId: recipient.id,
     referenceCode,
-    amount: {
-      currency: 'Naira',
-      value: transactionAmount
-    },
+    amount: { currency: 'Naira', value: transactionAmount },
     transactionType: 'transfer',
-    status: transactionStatus
-  })
+    transactionDirection: 'debit',
+    status: 'success'
+  });
 
-  await transaction.save()
+  const recipientTransaction = new Transaction({
+    userId: recipient.id,
+    recipientId: userId,
+    referenceCode,
+    amount: { currency: 'Naira', value: transactionAmount },
+    transactionType: 'transfer',
+    transactionDirection: 'credit',
+    status: 'success'
+  });
+
+  await senderTransaction.save();
+  await recipientTransaction.save();
 
   res.status(200).json({
     message: 'Transfer successful',
@@ -121,6 +133,7 @@ const initiateLocalTransaction = asyncHandler(async (req, res) => {
     recipientBalance: recipientWallet.balance.value,
   });
 });
+
 
 // Verifies a transaction (example implementation - can be extended to integrate Paystack verification)
 const verifyTransaction = asyncHandler(async (req, res) => {
@@ -151,13 +164,11 @@ const verifyTransaction = asyncHandler(async (req, res) => {
       // Find user and wallet
       const user = await User.findById(userId);
       if (!user) {
-        transactionStatus = "failed";
         return res.status(404).json({ message: 'User not found' });
       }
 
       const wallet = await Wallet.findOne({ userId });
       if (!wallet) {
-        transactionStatus = "failed";
         return res.status(404).json({ message: 'Wallet not found' });
       }
 
@@ -166,7 +177,8 @@ const verifyTransaction = asyncHandler(async (req, res) => {
       await wallet.save();
 
       // Update or create transaction
-      const transaction = await Transaction.findOneAndUpdate(
+  
+      const paystackTransaction = await Transaction.findOneAndUpdate(
         { referenceCode },
         {
           userId,
@@ -177,10 +189,13 @@ const verifyTransaction = asyncHandler(async (req, res) => {
           },
           transactionType: 'deposit',
           transferType: 'paystack',
+          transactionDirection: 'credit',
           status: transactionStatus
         },
         { upsert: true, new: true } // Create if doesn't exist
       );
+
+      await paystackTransaction.save()
 
       return res.status(200).json({
         message: 'Transaction verified successfully',
@@ -215,18 +230,22 @@ const getTransaction = asyncHandler(async (req, res) => {
 });
 
 
-const transactionHistory = asyncHandler(async (req,res) => {
+const transactionHistory = asyncHandler(async (req, res) => {
   try {
-    const userId = req.user.id
-    //const userTransactions =await Transaction.find({userId}).sort({ lastUpdate: -1 })
+    const userId = req.user.id;
+
+    // Fetch transactions involving the user as sender or recipient
     const userTransactions = await Transaction.find({
-      $or: [{ senderId: userId }, { recipientId: userId }],
+      $or: [{ userId }, { recipientId: userId }],
     }).sort({ createdAt: -1 });
-    return res.status(200).json(userTransactions)
+
+    return res.status(200).json(userTransactions);
   } catch (error) {
-    return res.status(400).json("error: ",error)
+    return res.status(400).json({ message: 'Error fetching transactions', error });
   }
-})
+});
+
+
 
 module.exports = { 
   InitiatePaystackTransaction, 

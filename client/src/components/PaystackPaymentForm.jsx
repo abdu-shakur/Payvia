@@ -26,7 +26,7 @@ function PaystackPaymentForm() {
 
       // Initiate the transaction
       const response = await axios.post(
-        'http://localhost:8000/api/dashboard/transaction/initiatePaystack',
+        `${apiUrl}/api/dashboard/transaction/initiatePaystack`,
         { amount },
         config
       );
@@ -65,7 +65,7 @@ function PaystackPaymentForm() {
       // Poll every 5 seconds until verified
       const pollInterval = setInterval(async () => {
         const verifyResponse = await axios.post(
-          'http://localhost:8000/api/dashboard/transaction/verify',
+          `${apiUrl}/api/dashboard/transaction/verify`,
           { reference },
           config
         );

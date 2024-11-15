@@ -22,7 +22,7 @@ function LocalPaymentForm() {
         },
       };
       const response = await axios.post(
-        'http://localhost:8000/api/dashboard/transaction/initiateLocal',
+        `${apiUrl}/api/dashboard/transaction/initiateLocal`,
         {amount,username},
         config
       );

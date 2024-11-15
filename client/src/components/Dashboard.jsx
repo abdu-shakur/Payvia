@@ -5,6 +5,7 @@ import {jwtDecode} from 'jwt-decode'
 function Dashboard() {
   const [funds, setFunds] = useState(null);
   const [username, setUsername]=useState('User');
+  const [userId, setUserId]= useState();
   const [transactions, setTransactions]=useState()
   const [showAddMoneyOptions, setShowAddMoneyOptions] = useState(false);
   const [showWithdrawMoneyOptions, setShowWithdrawMoneyOptions] = useState(false);
@@ -34,6 +35,7 @@ const closeWithdrawMoneyDialogue = () => {
         
         const decodedToken = jwtDecode(token);
         setUsername(decodedToken.name);
+        setUserId(decodedToken.id)
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -41,13 +43,13 @@ const closeWithdrawMoneyDialogue = () => {
         };
 
         const { data } = await axios.get(
-          'http://localhost:8000/api/dashboard/balance',
+          `${apiUrl}/api/dashboard/balance`,
           config
         );
         setFunds(data);
 
         const Usertransactions = await axios.get(
-          'http://localhost:8000/api/dashboard/transactions',
+          `${apiUrl}/api/dashboard/transactions`,
           config
         );
           setTransactions(Usertransactions.data)
@@ -62,7 +64,43 @@ const closeWithdrawMoneyDialogue = () => {
   }, []);
 
   
-
+  const RecentTransactiions = ({transactionHistory}) => {
+    return (
+      <div>
+        {transactionHistory.length > 0 ? (
+                  <div>
+                  <table className="w-full border border-gray-300 rounded-lg overflow-hidden">
+                    <thead className="bg-primary text-white text-left">
+                      <tr>
+                        <th className="p-4">Date</th>
+                        <th className="p-4">Amount</th>
+                        <th className="p-4">Status</th>
+                        <th className="p-4">Payment Method</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.filter(transaction=> (transaction.userId == userId)).map(transaction => (
+                        <tr key={transaction.userId} className="bg-secondary hover:bg-gray-100 text-text">
+                          <td className="p-4">{new Date(transaction.createdAt).toLocaleDateString()}</td>
+                  
+                          <td className={`p-4 ${getTransactionDirection(transaction.transactionDirection)}`}>{transaction.transactionDirection === "debit" ? "- " : ""}{funds.currency === "Naira" ? "₦" : ""}{transaction.amount.value}</td>
+                          <td className={`p-4 font-semibold ${getStatusClass(transaction.status)}`}>
+                            {transaction.status}
+                          </td>
+                          <td className="p-4">{transaction.transactionType}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+        ): (
+          <div>
+            <p className="text-center">No recent Transaction</p>
+          </div>
+        )}
+      </div>
+    )
+  }
   // const usernamei = "Abdushakur";
   if (!funds || !transactions) {
     return <p className="text-text">Loading...</p>;
@@ -116,34 +154,13 @@ const closeWithdrawMoneyDialogue = () => {
 
       <hr className="border-t border-gray-300 mb-6" />
       <h2 className="text-primary font-semibold text-2xl mb-4">Recent Transactions</h2>
-
-      <table className="w-full border border-gray-300 rounded-lg overflow-hidden">
-        <thead className="bg-primary text-white text-left">
-          <tr>
-            <th className="p-4">Date</th>
-            <th className="p-4">Amount</th>
-            <th className="p-4">Status</th>
-            <th className="p-4">Payment Method</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map(transaction => (
-            <tr key={transaction.referenceCode} className="bg-secondary hover:bg-gray-100 text-text">
-              <td className="p-4">{new Date(transaction.createdAt).toLocaleDateString()}</td>
-              
-              <td className="p-4">{funds.currency === "Naira" ? "₦" : ""}{transaction.amount.value}</td>
-              <td className={`p-4 font-semibold ${getStatusClass(transaction.status)}`}>
-                {transaction.status}
-              </td>
-              <td className="p-4">{transaction.transactionType}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      
+      
 
       <button className="mt-6 bg-Accent md:hidden text-white py-2 px-4 rounded-lg hover:bg-green-600">
         View Transaction History
       </button>
+      {<RecentTransactiions transactionHistory={transactions} />}
     </div>
   );
 }
@@ -152,12 +169,20 @@ const getStatusClass = (status) => {
   switch (status) {
     case 'success':
       return 'text-sucess';
-    case 'Processing':
+    case 'processing':
       return 'text-warning';
-    case 'Failed':
+    case 'failed':
       return 'text-error';
     default:
       return 'text-text';
+  }
+};
+const getTransactionDirection = (transactionDirection) => {
+  switch (transactionDirection) {
+    case 'credit':
+      return 'text-sucess';
+    case 'debit':
+      return 'text-warning';
   }
 };
 

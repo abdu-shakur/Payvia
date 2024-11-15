@@ -7,7 +7,7 @@ function Login(){
         event.preventDefault()
          try {
             console.log("reached");
-            const response = await axios.post("http://localhost:8000/api/auth/login", formData);
+            const response = await axios.post(`${apiUrl}/api/auth/login`, formData);
             if (response.data.token){
                 localStorage.setItem('token', response.data.token)
             }
