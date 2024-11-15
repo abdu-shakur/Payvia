@@ -7,7 +7,7 @@ const app = express();
 
 // CORS Configuration
 const corsOptions = {
-  origin: ['https://payvia.vercel.app', 'http://localhost:3000'], // Add your local development URL
+  origin: ['https://payvia.vercel.app', 'http://localhost:5173'], // Add your local development URL
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
   optionsSuccessStatus: 200
