@@ -29,21 +29,34 @@ const register = asyncHandler(async(req, res) => {
     }
 })
 
-const login = asyncHandler(async(req, res) => {
-    const {email, password, username} = req.body
-    const user = await User.findOne({$or: [email, username]})
-    const passwordConfirm = await bcrypt.compare(password,user.password)
-    if (user && passwordConfirm){
-        console.log('Login successful')
-        res.status(200).json({_id: user.id, name: user.name, email: user.email, token: generateJWTtoken(user._id, user.name)})
-    }else{
-        res.status(400)
-        throw new Error("Invalid data");
-        
+const login = asyncHandler(async (req, res) => {
+    const { email, password, username } = req.body;
+
+    // Find user by email or username
+    const user = await User.findOne({ $or: [{ email }, { username }] });
+
+    if (!user) {
+        res.status(400);
+        throw new Error("User not found");
     }
-    
-    res.status(200).json({message: 'Logged In Successfully'})
-})
+
+    // Compare passwords
+    const passwordConfirm = await bcrypt.compare(password, user.password);
+
+    if (user && passwordConfirm) {
+        console.log('Login successful');
+        return res.status(200).json({
+            _id: user.id,
+            name: user.name,
+            email: user.email,
+            token: generateJWTtoken(user._id, user.name),
+        });
+    } else {
+        res.status(400);
+        throw new Error("Invalid credentials");
+    }
+});
+
 const getUser = asyncHandler(async(req, res) => {
     const { _id, name, email } = await User.findById(req.user.id)
         res.status(200).json({ id: _id, name, email })
