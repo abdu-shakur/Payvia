@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import PaystackPop from '@paystack/inline-js';
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function PaystackPaymentForm() {
   const [amount, setAmount] = useState('');
   const [error, setError] = useState('');

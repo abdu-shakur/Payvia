@@ -1,6 +1,8 @@
 import axios from 'axios';
 import React, { useState } from 'react'; 
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function LocalPaymentForm() {
     const [username, setUsername] = useState('');
     const [amount, setAmount] = useState('');

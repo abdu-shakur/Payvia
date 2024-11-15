@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 function Login(){
     const [formData, setFormData] = useState({ email: '', password: '' })
     const { email, password } = formData

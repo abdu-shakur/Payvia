@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, {useState} from "react";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Signup(){
     const [user, setUser]=useState({name:'',email:'',username:'',phoneNumber:'', password:'',})
     const {name, username, email, password, phoneNumber} = user

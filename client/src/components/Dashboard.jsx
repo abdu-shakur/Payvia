@@ -2,11 +2,13 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode'
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Dashboard() {
   const [funds, setFunds] = useState(null);
   const [username, setUsername]=useState('User');
   const [userId, setUserId]= useState();
-  const [transactions, setTransactions]=useState()
+  const [transactions, setTransactions]=useState([])
   const [showAddMoneyOptions, setShowAddMoneyOptions] = useState(false);
   const [showWithdrawMoneyOptions, setShowWithdrawMoneyOptions] = useState(false);
 
@@ -14,6 +16,7 @@ function Dashboard() {
     setShowAddMoneyOptions(!showAddMoneyOptions);
     setShowWithdrawMoneyOptions(false)
   };
+  
   const withdrawMoneyClick = () => {
     setShowWithdrawMoneyOptions(!showWithdrawMoneyOptions);
     setShowAddMoneyOptions(false)
