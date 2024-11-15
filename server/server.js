@@ -19,6 +19,10 @@ app.use(express.urlencoded({ extended: false }));
 // Connect to Database
 connectDB();
 
+app.get("/", (req,res) => {
+    res.json("Payvia deployed")
+})
+
 // Define routes for API
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/transactions', require('./routes/transactionRoutes'));
