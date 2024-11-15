@@ -19,16 +19,15 @@ app.use(express.urlencoded({ extended: false }));
 // Connect to Database
 connectDB();
 
-app.get("/", (req,res) => {
-    res.json("Payvia deployed")
-})
+// Basic route
+app.get("/", (req, res) => {
+  res.json("Payvia deployed");
+});
 
 // Define routes for API
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/transactions', require('./routes/transactionRoutes'));
 app.use('/api/funds', require('./routes/fundsRoutes'));
 
-// Export the app (for Vercel's serverless function handler)
-module.exports = app;
-
-
+// Export the app for Vercel to handle requests
+module.exports = (req, res) => app(req, res);
