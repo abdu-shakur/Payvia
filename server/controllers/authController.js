@@ -30,8 +30,8 @@ const register = asyncHandler(async(req, res) => {
 })
 
 const login = asyncHandler(async(req, res) => {
-    const {email, password} = req.body
-    const user = await User.findOne({email})
+    const {email, password, username} = req.body
+    const user = await User.findOne({$or: [email, username]})
     const passwordConfirm = await bcrypt.compare(password,user.password)
     if (user && passwordConfirm){
         console.log('Login successful')
