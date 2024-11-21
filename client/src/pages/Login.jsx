@@ -20,6 +20,7 @@ function Login() {
     }
 
     try {
+      // await new Promise((resolve) => setTimeout(resolve, 10000));
       console.log("Attempting login...");
       const response = await axios.post(`${apiUrl}/api/auth/login`, formData);
 
@@ -42,7 +43,7 @@ function Login() {
 
   return (
     <div className="login-container">
-      {loading && <Loading/>}
+      {loading ? <Loading/>: (
       <form className="login-form" onSubmit={onSubmit}>
         <h2>Welcome Back</h2>
         <p className="text-text text-base text-opacity-60 pb-5">
@@ -92,6 +93,7 @@ function Login() {
           </span>
         </h3>
       </form>
+      )}
     </div>
   );
 }

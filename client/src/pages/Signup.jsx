@@ -11,14 +11,15 @@ const apiUrl = import.meta.env.VITE_API_URL;
 function Signup(){
     const [user, setUser]=useState({name:'',email:'',username:'',phoneNumber:'', password:'',})
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState()
+    const [error, setError] = useState("")
     const {name, username, email, password, phoneNumber} = user
     const onSubmit = async(e)=>{
         e.preventDefault()
         setError('')
         setLoading(true)
-        
+
         try {
+            console.log("Attempting signup...")
             const response = await axios.post(`${apiUrl}/api/auth/`, user);
             console.log(response)
             window.location.href=('/login');
@@ -36,7 +37,7 @@ function Signup(){
 
     return(
         <div>
-            {loading && <Loading/>}
+            {loading ? <Loading/>:(
             <form  className="p-5 bg-secondary" onSubmit={onSubmit}>
             <div>
                 <h2>Create your Payvia Account</h2>
@@ -70,6 +71,7 @@ function Signup(){
                 <button className="submit-button">Register</button>
             </div>
         </form>
+        )}
         </div>
     )
 }
