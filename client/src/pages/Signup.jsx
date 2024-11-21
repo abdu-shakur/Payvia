@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, {useState} from "react";
 import Loading from "./Loading";
-const [error, setError] = useState()
-const [loading, setLoading] = useState(false)
+
+
 
 
 
@@ -10,6 +10,8 @@ const apiUrl = import.meta.env.VITE_API_URL;
 
 function Signup(){
     const [user, setUser]=useState({name:'',email:'',username:'',phoneNumber:'', password:'',})
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState()
     const {name, username, email, password, phoneNumber} = user
     const onSubmit = async(e)=>{
         e.preventDefault()
