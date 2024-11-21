@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import Home from './pages/Home';
 import About from './pages/others/About';
 import Explore from './pages/others/Explore';
@@ -11,6 +12,9 @@ import ForgotPassword from './pages/forgotPassword';
 import PaystackPaymentForm from './components/PaystackPaymentForm';
 import DashboardLayout from './components/DashboardLayout';
 import LocalPaymentForm from './components/LocalPaymentForm';
+import {LoggedIn, AllowAuthUser, DenyAuthUser} from './utils/LoggedIn';
+
+
 
 function App() {
   return (
@@ -18,7 +22,8 @@ function App() {
       <div className="flex flex-col content-between min-h-screen">
         {/* Show Header only for non-dashboard routes */}
         <Routes>
-          <Route path="/dashboard/*" element={<DashboardLayout />}>
+          
+          <Route path="/dashboard/*" element={AllowAuthUser(<DashboardLayout/>)}>
             <Route path="" element={<Dashboard />} />
             <Route path="initiateTransaction" element={<PaystackPaymentForm />} />
             <Route path="payviaTransfer" element={<LocalPaymentForm/>}/>
@@ -35,13 +40,13 @@ function App() {
         </Routes>
         <main className="flex-1 text-text">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={DenyAuthUser(<Home />)} />
             <Route path="/about" element={<About />} />
-            <Route path="/explore" element={<Explore />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/explore" element={DenyAuthUser(<Explore />)} />
+            <Route path="/login" element={DenyAuthUser(<Login/>)} />
+            <Route path="/signup" element={DenyAuthUser(<Signup/>)} />
+            <Route path="/privacy-policy" element={DenyAuthUser(<PrivacyPolicy />)} />
+            <Route path="/forgot-password" element={DenyAuthUser(<ForgotPassword />)} />
             {/* Other routes */}
           </Routes>
         </main>
