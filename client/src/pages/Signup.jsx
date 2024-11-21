@@ -17,6 +17,7 @@ function Signup(){
         e.preventDefault()
         setError('')
         setLoading(true)
+        
         try {
             const response = await axios.post(`${apiUrl}/api/auth/`, user);
             console.log(response)
@@ -30,13 +31,12 @@ function Signup(){
         }
 
 
-        if(loading){
-            return <Loading />
-          }
+        
     }
 
     return(
         <div>
+            {loading && <Loading/>}
             <form  className="p-5 bg-secondary" onSubmit={onSubmit}>
             <div>
                 <h2>Create your Payvia Account</h2>

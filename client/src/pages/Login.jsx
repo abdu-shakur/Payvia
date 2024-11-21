@@ -37,13 +37,12 @@ function Login() {
     }
 
 
-    if(loading){
-      return <Loading />
-    }
+    
   };
 
   return (
     <div className="login-container">
+      {loading && <Loading/>}
       <form className="login-form" onSubmit={onSubmit}>
         <h2>Welcome Back</h2>
         <p className="text-text text-base text-opacity-60 pb-5">
