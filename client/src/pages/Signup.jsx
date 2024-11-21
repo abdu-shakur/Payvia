@@ -1,5 +1,8 @@
 import axios from "axios";
 import React, {useState} from "react";
+const [error, setError] = useState()
+const [loading, setLoading] = useState(false)
+
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -8,6 +11,7 @@ function Signup(){
     const {name, username, email, password, phoneNumber} = user
     const onSubmit = async(e)=>{
         e.preventDefault()
+        setError(true)
         try {
             const response = await axios.post(`${apiUrl}/api/auth/`, user);
             console.log(response)
@@ -15,6 +19,9 @@ function Signup(){
         } catch (error) {
             const errorMessage=error.response?.data?.error || "Sign Up failed"
             console.log(errorMessage)
+            setError(errorMessage)
+        }finally{
+            setError(false)
         }
     }
 
@@ -24,6 +31,7 @@ function Signup(){
             <div>
                 <h2>Create your Payvia Account</h2>
                 <p className="text-Accent">Join the Payvia community</p>
+                {error && <p className="error-message text-red-500">{error}</p>}
                 <div className="block">
                     <label>Name </label>
                     <input required placeholder="Enter your name" value={name} onChange={(e)=>setUser({...user, name: e.target.value})}/>

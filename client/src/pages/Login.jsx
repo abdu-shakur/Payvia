@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import axios from "axios";
+import Loading from "./Loading"
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Login() {
   const [formData, setFormData] = useState({ emailOrUsername: "", password: "" });
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState("");
-  const { emailOrUsername, password } = formData;
+  const { emailOrUsername, password } = formData;''
 
   const onSubmit = async (event) => {
     event.preventDefault();
     setError(""); // Clear any previous error messages
-
+    setLoading(true)
     if (!emailOrUsername || !password) {
       setError("Email/Username and Password are required");
       return;
@@ -30,6 +32,13 @@ function Login() {
       const errorMessage = error.response?.data?.message || "Login failed";
       setError(errorMessage); // Display the error to the user
       console.error(errorMessage);
+    }finally{
+      setLoading(false)
+    }
+
+
+    if(loading){
+      return <Loading />
     }
   };
 
