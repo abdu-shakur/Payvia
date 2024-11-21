@@ -37,7 +37,9 @@ function Receipt() {
   return (
     <div className="min-h-screen p-6 bg-gray-100">
       <div className="receipt-container max-w-lg mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 className="text-primary font-bold text-2xl text-center mb-6">Transaction Receipt</h2>
+       
+
+        <h2 className="text-primary font-bold text-2xl text-center mb-6"><span className='heading hidden'>Payvia </span>Transaction Receipt</h2>
         <div className="mb-4 border-t border-gray-300 pt-4">
           <p className="text-gray-700 font-semibold">Transaction ID:</p>
           <p className="text-gray-900">{transDetails._id}</p>

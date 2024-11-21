@@ -26,6 +26,10 @@ input {
     visibility: hidden;
   }
 
+  .heading{
+    display: inline;
+  }
+
   .receipt-container,
   .receipt-container * {
     visibility: visible;

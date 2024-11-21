@@ -65,7 +65,7 @@ function Dashboard() {
             </thead>
             <tbody>
               {transactionHistory
-                .filter((transaction) => transaction.userId === userId)
+                .filter((transaction) => transaction.userId === userId).slice(0,10)
                 .map((transaction) => (
                   <tr
                     key={transaction._id}
