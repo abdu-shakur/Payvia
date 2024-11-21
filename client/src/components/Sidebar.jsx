@@ -9,7 +9,7 @@ function Sidebar() {
   window.location.href = "/";
 }
   return (
-    <div className="w-64 bg-primary text-white h-screen p-4 flex flex-col justify-between">
+    <div className="w-64 bg-primary text-white h-full p-4 flex flex-col justify-between">
       <div>
         <h2 className="text-2xl font-bold mb-8">Dashboard</h2>
         <nav className="flex flex-col space-y-4">
