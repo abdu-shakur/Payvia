@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode'
 import { Link } from 'react-router-dom';
+import Loading from '../pages/Loading';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -108,7 +109,7 @@ const closeWithdrawMoneyDialogue = () => {
   }
   // const usernamei = "Abdushakur";
   if (!funds || !transactions) {
-    return <p className="text-text">Loading...</p>;
+    return <Loading/>;
   }
   
   
