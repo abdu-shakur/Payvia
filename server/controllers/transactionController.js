@@ -226,7 +226,7 @@ const getTransaction = asyncHandler(async (req, res) => {
     return res.status(404).json({ message: 'Transaction not found' });
   }
 
-  res.status(200).json("transaction: ", Transaction);
+  res.status(200).json({message: "transaction successful", transactiondetails: transaction});
 });
 
 

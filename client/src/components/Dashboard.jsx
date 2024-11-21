@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode'
+import { Link } from 'react-router-dom';
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -54,7 +55,7 @@ const closeWithdrawMoneyDialogue = () => {
         const Usertransactions = await axios.get(
           `${apiUrl}/api/dashboard/transactions`,
           config
-        );
+        ); 
           setTransactions(Usertransactions.data)
           console.log(Usertransactions.data)
       } catch (error) {
@@ -91,6 +92,7 @@ const closeWithdrawMoneyDialogue = () => {
                             {transaction.status}
                           </td>
                           <td className="p-4">{transaction.transactionType}</td>
+                          <td><Link to={`receipt/${transaction._id}`}>View Reciept</Link></td>
                         </tr>
                       ))}
                     </tbody>
