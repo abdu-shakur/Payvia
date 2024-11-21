@@ -21,3 +21,20 @@ input {
 .submit-button {
   @apply bg-primary mt-5 px-4 rounded-xl font-normal text-secondary w-full py-1.5;
 }
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .receipt-container,
+  .receipt-container * {
+    visibility: visible;
+  }
+
+  .receipt-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
