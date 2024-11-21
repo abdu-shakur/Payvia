@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, {useState} from "react";
+import Loading from "./Loading";
 const [error, setError] = useState()
 const [loading, setLoading] = useState(false)
+
 
 
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -11,7 +13,8 @@ function Signup(){
     const {name, username, email, password, phoneNumber} = user
     const onSubmit = async(e)=>{
         e.preventDefault()
-        setError(true)
+        setError('')
+        setLoading(true)
         try {
             const response = await axios.post(`${apiUrl}/api/auth/`, user);
             console.log(response)
@@ -21,8 +24,13 @@ function Signup(){
             console.log(errorMessage)
             setError(errorMessage)
         }finally{
-            setError(false)
+            setLoading(false)
         }
+
+
+        if(loading){
+            return <Loading />
+          }
     }
 
     return(
