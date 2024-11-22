@@ -35,7 +35,7 @@ const TransactionsPage = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold text-center mb-6">Recent Transactions</h2>
+      <h2 className="text-2xl font-bold text-center mb-6">Trannsaction History</h2>
 
       {/* Table Container */}
       <div className="bg-white shadow-md rounded-lg overflow-hidden">
