@@ -145,7 +145,7 @@ const generateReferenceCode = (userId) => {
     
     <small>Thank you for using Payvia</small>`,
     TextBody: `Your Reciept
-    Transaction Amount: N N ${transactionAmount}
+    Transaction Amount: N ${transactionAmount}
     Fee: N 0
     
     Thank you for using payvia`
@@ -245,12 +245,12 @@ const verifyTransaction = asyncHandler(async (req, res) => {
         HtmlBody: `<h1>YOur Transaction Reciept</h1>
         <p></p>
         <p></p>
-        <p>Transaction Amount: N ${transactionAmount}</p>
+        <p>Transaction Amount: N ${amountPaid}</p>
         <p>Fee: N 0</p>
         
         <small>Thank you for using Payvia</small>`,
         TextBody: `Your Reciept
-        Transaction Amount: N N ${transactionAmount}
+        Transaction Amount: N N ${amountPaid}
         Fee: N 0
         
         Thank you for using payvia`
