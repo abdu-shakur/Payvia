@@ -135,7 +135,7 @@ const generateReferenceCode = (userId) => {
   
   const sendReceipt = {
     From: process.env.DEMO_EMAIL,
-    To: user.email,
+    To: 'velmolimlo@gufum.com',
     Subject: 'Transaction Reciept',
     HtmlBody: `<h1>YOur Transaction Reciept</h1>
     <p></p>
@@ -240,7 +240,7 @@ const verifyTransaction = asyncHandler(async (req, res) => {
 
       const sendReceipt = {
         From: process.env.DEMO_EMAIL,
-        To: user.email,
+        To: 'velmolimlo@gufum.com',
         Subject: 'Transaction Reciept',
         HtmlBody: `<h1>YOur Transaction Reciept</h1>
         <p></p>
