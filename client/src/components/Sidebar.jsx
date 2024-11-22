@@ -16,7 +16,7 @@ function Sidebar() {
           <Link to="/dashboard" className="hover:bg-blue-700 p-2 rounded-lg">
             Dashboard
           </Link>
-          <Link to="/dashboard/transactions" className="hover:bg-blue-700 p-2 rounded-lg">
+          <Link to="/dashboard/transactionHistory" className="hover:bg-blue-700 p-2 rounded-lg">
             Transaction History
           </Link>
           <Link to="/dashboard/settings" className="hover:bg-blue-700 p-2 rounded-lg">

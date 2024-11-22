@@ -1,6 +1,7 @@
 const asyncHandler = require('express-async-handler');
 const axios = require('axios');
 const crypto = require('crypto')
+const postmark = require('postmark')
 
 const User = require('../models/userModel');
 const Wallet = require('../models/fundsModel');
@@ -114,7 +115,7 @@ const generateReferenceCode = (userId) => {
     status: 'success'
   });
 
-  const recipientTransaction = new Transaction({
+    const recipientTransaction = new Transaction({
     userId: recipient.id,
     recipientId: userId,
     referenceCode,
@@ -126,6 +127,46 @@ const generateReferenceCode = (userId) => {
 
   await senderTransaction.save();
   await recipientTransaction.save();
+
+
+
+  
+  //Postmark sending to user
+  
+  const sendReceipt = {
+    From: process.env.DEMO_EMAIL,
+    To: user.email,
+    Subject: 'Transaction Reciept',
+    HtmlBody: `<h1>YOur Transaction Reciept</h1>
+    <p></p>
+    <p></p>
+    <p>Transaction Amount: N ${transactionAmount}</p>
+    <p>Fee: N 0</p>
+    
+    <small>Thank you for using Payvia</small>`,
+    TextBody: `Your Reciept
+    Transaction Amount: N N ${transactionAmount}
+    Fee: N 0
+    
+    Thank you for using payvia`
+  }
+  try {
+    const response = await axios.post(
+      "https://api.postmarkapp.com/email",
+      sendReceipt,
+      {
+        headers: {
+          "X-Postmark-Server-Token": process.env.POSTMARK_SERVER_KEY,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    console.log("Email sent successfully:", response.data);
+  } catch (error) {
+    console.error("Error sending email:", error.response.data);
+  }
+  
+
 
   res.status(200).json({
     message: 'Transfer successful',
@@ -197,6 +238,39 @@ const verifyTransaction = asyncHandler(async (req, res) => {
 
       await paystackTransaction.save()
 
+      const sendReceipt = {
+        From: process.env.DEMO_EMAIL,
+        To: user.email,
+        Subject: 'Transaction Reciept',
+        HtmlBody: `<h1>YOur Transaction Reciept</h1>
+        <p></p>
+        <p></p>
+        <p>Transaction Amount: N ${transactionAmount}</p>
+        <p>Fee: N 0</p>
+        
+        <small>Thank you for using Payvia</small>`,
+        TextBody: `Your Reciept
+        Transaction Amount: N N ${transactionAmount}
+        Fee: N 0
+        
+        Thank you for using payvia`
+      }
+      try {
+        const response = await axios.post(
+          "https://api.postmarkapp.com/email",
+          sendReceipt,
+          {
+            headers: {
+              "X-Postmark-Server-Token": process.env.POSTMARK_SERVER_KEY,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("Email sent successfully:", response.data);
+      } catch (error) {
+        console.error("Error sending email:", error.response.data);
+      }
+
       return res.status(200).json({
         message: 'Transaction verified successfully',
         data: response.data.data
@@ -231,19 +305,39 @@ const getTransaction = asyncHandler(async (req, res) => {
 
 
 const transactionHistory = asyncHandler(async (req, res) => {
+  const page = parseInt(req.query.page) || 1; 
+  const limit = parseInt(req.query.limit) || 10; 
+  const skip = (page - 1) * limit;
+
   try {
     const userId = req.user.id;
+    const filter = req.query.filter || "sent"; 
 
-    // Fetch transactions involving the user as sender or recipient
-    const userTransactions = await Transaction.find({
-      $or: [{ userId }, { recipientId: userId }],
-    }).sort({ createdAt: -1 });
+    let query = { $or: [{ userId }, { recipientId: userId }] };
 
-    return res.status(200).json(userTransactions);
+    
+    if (filter === "sent") query = { userId }; 
+    if (filter === "received") query = { recipientId: userId };
+
+    const userTransactions = await Transaction.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    const totalTransactions = await Transaction.countDocuments(query);
+
+    return res.status(200).json({
+      transactions: userTransactions,
+      totalTransactions,
+      currentPage: page,
+      totalPages: Math.ceil(totalTransactions / limit),
+    });
   } catch (error) {
-    return res.status(400).json({ message: 'Error fetching transactions', error });
+    return res.status(400).json({ message: "Error fetching transactions", error });
   }
 });
+
+
 
 
 

@@ -13,6 +13,8 @@ import DashboardLayout from './components/DashboardLayout';
 import LocalPaymentForm from './components/LocalPaymentForm';
 import Receipt from './pages/Receipt';
 import {LoggedIn, AllowAuthUser, DenyAuthUser} from './utils/LoggedIn';
+import TransactionsPage from './components/TransactionsPage';
+import Settings from './components/Settings';
 
 
 
@@ -28,6 +30,8 @@ function App() {
             <Route path="initiateTransaction" element={<PaystackPaymentForm />} />
             <Route path="payviaTransfer" element={<LocalPaymentForm/>}/>
             <Route path="receipt/:id" element={<Receipt/>}/>
+            <Route path="transactionHistory" element={<TransactionsPage/>}/>
+            <Route path="settings" element={<Settings />}/>
             {/* Add other dashboard-related routes here */}
           </Route>
 

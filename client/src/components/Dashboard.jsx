@@ -40,7 +40,7 @@ function Dashboard() {
         setFunds(data);
 
         const Usertransactions = await axios.get(`${apiUrl}/api/dashboard/transactions`, config);
-        setTransactions(Usertransactions.data);
+        setTransactions(Usertransactions.data.transactions);
       } catch (error) {
         console.error('Error fetching funds:', error);
       }
